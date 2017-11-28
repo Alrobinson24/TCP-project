@@ -10,12 +10,12 @@ public class TCPclient {
 
 	public static void main(String[] args) throws Exception {
 		
-		String address = " ";
+		String IPaddress = " ";
 		Scanner sc = new Scanner(System.in);
-		System.out.println("Enter the server address:");
-		address = sc.nextLine();
+		System.out.println("Enter the server IPaddress:");
+		IPaddress = sc.nextLine();
 		
-		Socket s = new Socket(address,1900);
+		Socket s = new Socket(IPaddress,1900);
 		DataInputStream dinput = new DataInputStream(s.getInputStream());
 		DataOutputStream doutput = new DataOutputStream(s.getOutputStream());
 		
@@ -39,7 +39,7 @@ public class TCPclient {
 			System.out.println("size of the files:"+(ma/(1024*1024))+ "mb");
 			
 			byte b[] = new byte [1024];
-			System.out.println("Ready to recevie the file:");
+			System.out.println("Ready to recevie the files:");
 			FileOutputStream fos=new FileOutputStream(new File(filename), true);
 			long bytesRead;
 			
@@ -48,7 +48,7 @@ public class TCPclient {
 				fos.write(b, 0, b.length);
 				
 			}while(!(bytesRead < 1024));
-			System.out.println("sending file is finished:");
+			System.out.println("sending files is finished:");
 			fos.close();
 			doutput.close();
 			s.close();
