@@ -1,70 +1,38 @@
-//**
-//author: ajrobinson0
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
-import java.net.Socket;
-
-
-
 
 public class TCPclient {
 
-	public static void main(String[] args) throws Exception {
-		// create a string method the provides the IPaddress and the for the UTF format
-		String IPaddress = "";
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Enter the server IPaddress:");
-		IPaddress = sc.nextLine();
+	public static void main(String[] args) throws IOException {
+// Define the variables bytesread which contain the current status of the bytes from the inputstream and the currentTot which reads the number of the btyes
+	    int filesize=1022386; 
+	    int bytesRead;
+	    int currentTot = 0; 
+//Define the socket that connects to the IPaddress to the port number which is 1900 
+	    Socket socket = new Socket("127.0.0.1",1900);
+	    byte [] bytearray  = new byte [filesize];
+	    InputStream ie = socket.getInputStream(); 
+//This method fos will locate the file to copied from the server and bos prints the output file at btye array 
+	    FileOutputStream fos = new FileOutputStream("copy.doc"); 
+	    BufferedOutputStream bos = new BufferedOutputStream(fos); 
+	    bytesRead = ie.read(bytearray,0,bytearray.length); 
+	    currentTot = bytesRead;
+//Implement the do/while loop to print the input stream and determine ifthe bytesRead are greater than or equal to zero then it will update the current total of the bytes.
+// If the ByteRead is -1 then no data is left on the input stream and the loop exits	    
+	    do{
+	    	bytesRead = ie.read(bytearray, currentTot, (bytearray.length-currentTot));
+	    	if(bytesRead >= 0) currentTot += bytesRead;
+	    }while(bytesRead > -1);
+	    
+	    bos.write(bytearray, 0 , currentTot);
+	    bos.flush();
+	    bos.close();
+	    socket.close();
+
+	  
 		
-		//create the socket for the port number which is 1900
-		Socket s = new Socket(IPaddress,1900);
-		DataInputStream dinput = new DataInputStream(s.getInputStream());
-		DataOutputStream doutput = new DataOutputStream(s.getOutputStream());
-		
-		//The bufferedreader class explains the text from the input and output stream
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		System.out.println("Send ready to begin..");
-		String str = "", filename = "";
-		
-		// create a try and catch create while loop for the UTF
-		try{
-			while(!str.equals("begin"))
-			str = br.readLine();
-			doutput.writeUTF(str);
-			doutput.flush();
-			
-			filename = dinput.readUTF();
-			System.out.println("Recevied the files:"+filename);
-			
-			filename = "client" +filename;
-			System.out.println("Saved files as:"+filename);
-			// create a long method of 1024 to multiply the value of the file. If the file is greater than 1024 then an error will occur.
-			long mb = Long.parseLong(dinput.readUTF());
-			System.out.println("size of the files:"+(mb/(1024*1024))+ "mb");
-			
-			// create a byte method for the value of the megabytes size of 1024
-			// create a do/try catch method to receive the files from the server
-			byte b[] = new byte [1024];
-			System.out.println("Ready to recevie..");
-			FileOutputStream fos=new FileOutputStream(new File(filename), true);
-			long bytesRead;
-			
-			do{
-				bytesRead = dinput.read(b, 0, b.length);
-				fos.write(b, 0, b.length);
-				
-			}while(!(bytesRead < 1024));
-			System.out.println("sending files is finished:");
-			fos.close();
-			doutput.close();
-			s.close();
-			
-			
-		}catch(EOFException e) {
-			
-		}
-		
+
 	}
 
 }
